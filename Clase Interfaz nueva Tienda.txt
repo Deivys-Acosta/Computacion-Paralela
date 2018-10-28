@@ -1,0 +1,294 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package InterfazTienda;
+
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
+
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.UIManager;
+
+import InterfazTienda.Producto.Tipo;
+
+/**
+ * Ventana principal de la aplicacion.
+ */
+@SuppressWarnings("serial")
+public class InterfazTienda extends JFrame
+{
+
+    /**
+     * Clase principal del mundo.
+     */
+    private Tienda tienda;
+
+    // -----------------------------------------------------------------
+    // Atributos de la interfaz
+    // -----------------------------------------------------------------
+
+    /**
+     * Panel con la imagen del t?tulo.
+     */
+    private PanelImagen panelImagen;
+
+    /**
+     * Panel con las opciones.
+     */
+    private PanelOpciones panelOpciones;
+
+    /**
+     * Panel para mostrar la informacion del producto1.
+     */
+    private PanelProducto SeleccionlProducto1;
+
+    /**
+     * Panel para mostrar la informacion del producto2.
+     */
+    private PanelProducto SeleccionlProducto2;
+
+    /**
+     * Panel para mostrar la informacion del producto3.
+     */
+    private PanelProducto SeleccionlProducto3;
+
+    /**
+     * Panel para mostrar la informacion del producto.
+     */
+    private PanelProducto SeleccionlProducto4;
+
+    /**
+     * Construye la ventana principal de la aplicacion.
+     */
+    public InterfazTienda( )
+    {
+        setTitle( "Tienda FUS" );
+        setSize( 805, 820 );
+        setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+
+        tienda = new Tienda( );
+
+        setLayout( new BorderLayout( ) );
+
+        panelImagen = new PanelImagen( );
+        add( panelImagen, BorderLayout.NORTH );
+
+        panelOpciones = new PanelOpciones( this );
+        add( panelOpciones, BorderLayout.SOUTH );
+
+        JPanel panelCentro = new JPanel( );
+        panelCentro.setLayout( new GridLayout( 2, 2 ) );
+
+        SeleccionlProducto1 = new PanelProducto( this );
+        panelCentro.add(SeleccionlProducto1 );
+        SeleccionlProducto2 = new PanelProducto( this );
+        panelCentro.add(SeleccionlProducto2 );
+        SeleccionlProducto3 = new PanelProducto( this );
+        panelCentro.add(SeleccionlProducto3 );
+        SeleccionlProducto4 = new PanelProducto( this );
+        panelCentro.add(SeleccionlProducto4 );
+
+        add( panelCentro, BorderLayout.CENTER );
+
+        setLocationRelativeTo( null );
+        setResizable( false );
+
+        actualizar( );
+    }
+
+    /**
+     * Actualiza la informacion de las opciones.
+     */
+    private void actualizar( )
+    {
+        SeleccionlProducto1.actualizarInfo( tienda.darProducto1( ) );
+        SeleccionlProducto2.actualizarInfo( tienda.darProducto2( ) );
+        SeleccionlProducto3.actualizarInfo( tienda.darProducto3( ) );
+        SeleccionlProducto4.actualizarInfo( tienda.darProducto4( ) );
+    }
+
+    /**
+     * Venprocustos segun catidad ingresada desdes la interfaz.
+    */
+    public void venderProducto( String pNombreProducto )
+    {
+        String pCant = JOptionPane.showInputDialog( this, "Cantidad de unidades a vender:", "Vender producto", JOptionPane.INFORMATION_MESSAGE );
+        if( pCant != null )
+        {
+            try
+            {
+                int cantidad = Integer.parseInt( pCant );
+                if( cantidad > 0 )
+                {
+                    int venta = tienda.venderProducto( pNombreProducto, cantidad );
+                    if( venta > 0 )
+                    {
+                        JOptionPane.showMessageDialog( this, "Fueron vendidas " + venta + " unidades.", "Vender producto", JOptionPane.INFORMATION_MESSAGE );
+                        actualizar( );
+                    }
+                    else
+                    {
+                        JOptionPane.showMessageDialog( this, "El producto no tiene unidades para realizar la venta.", "Vender producto", JOptionPane.ERROR_MESSAGE );
+                    }
+                }
+                else
+                {
+                    JOptionPane.showMessageDialog( this, "La cantidad ingresada debe ser mayor a cero.", "Vender producto", JOptionPane.ERROR_MESSAGE );
+                }
+            }
+            catch( NumberFormatException e )
+            {
+                JOptionPane.showMessageDialog( this, "El valor ingresado debe ser un valor numerico.", "Vender producto", JOptionPane.ERROR_MESSAGE );
+            }
+        }
+    }
+
+    /**
+     * Metodo abastecer el producto 
+          */
+    public void abastecerUnidades( String pNombreProducto )
+    {
+        String pCant = JOptionPane.showInputDialog( this, "Cantidad de unidades para abstecer:", "Abastecer producto", JOptionPane.INFORMATION_MESSAGE );
+        if( pCant != null )
+        {
+            try
+            {
+                int cantidad = Integer.parseInt( pCant );
+                if( cantidad > 0 )
+                {
+                    boolean abastecio = tienda.abastecerProducto( pNombreProducto, cantidad );
+                    actualizar( );
+                    if( abastecio )
+                    {
+                        JOptionPane.showMessageDialog( this, "Se abastecio el producto.", "Abastecer producto", JOptionPane.INFORMATION_MESSAGE );
+                    }
+                    else
+                    {
+                        JOptionPane.showMessageDialog( this, "No se pudo abastecer el producto.", "Abastecer producto", JOptionPane.ERROR_MESSAGE );
+
+                    }
+                }
+                else
+                {
+                    JOptionPane.showMessageDialog( this, "La cantidad ingresada debe ser mayor a cero.", "Abastecer producto", JOptionPane.ERROR_MESSAGE );
+                }
+            }
+            catch( NumberFormatException e )
+            {
+                JOptionPane.showMessageDialog( this, "El valor ingresado debe ser un valor numerico.", "Abastecer producto", JOptionPane.ERROR_MESSAGE );
+            }
+        }
+    }
+
+    /**
+     * Cambia el producto con el nombre actual con los valores dados 
+     */
+    public void cambiarProducto( String pNombreActual, String pNombreNuevo, Tipo pTipo, double pValorUnitario, int pCantidadBodega, int pCantidadMinima, String pRutaImagen )
+    {
+        boolean cambio = tienda.cambiarProducto( pNombreActual, pNombreNuevo, pTipo, pValorUnitario, pCantidadBodega, pCantidadMinima, pRutaImagen );
+        if( !cambio )
+        {
+            JOptionPane.showMessageDialog( this, "Ya existe un producto con el nombre " + pNombreNuevo + ".", "Cambiar producto", JOptionPane.ERROR_MESSAGE );
+        }
+        else
+        {
+            actualizar( );
+        }
+    }
+
+    /**
+     * Mostrar el producto mas vendido.
+     */
+    public void mostrarMasVendido( )
+    {
+        if( tienda.darProductoMasVendido( ) != null )
+        {
+            JOptionPane.showMessageDialog( this, "El producto mas vendido es: " + tienda.darProductoMasVendido( ).darNombre( ), "Producto mas vendido", JOptionPane.INFORMATION_MESSAGE );
+        }
+        else
+        {
+            JOptionPane.showMessageDialog( this, "Ningun produto tiene unidades vendidas.", "Producto mas vendido", JOptionPane.ERROR_MESSAGE );
+        }
+    }
+
+    /**
+     * Mostrar el producto menos vendido.
+     */
+    public void mostrarMenosVendido( )
+    {
+        if( tienda.darProductoMenosVendido( ) != null )
+        {
+            JOptionPane.showMessageDialog( this, "El producto menos vendido es: " + tienda.darProductoMenosVendido( ).darNombre( ), "Producto menos vendido", JOptionPane.INFORMATION_MESSAGE );
+        }
+        else
+        {
+            JOptionPane.showMessageDialog( this, "Ningun produto tiene unidades vendidas.", "Producto menos vendido", JOptionPane.ERROR_MESSAGE );
+        }
+    }
+
+    /**
+     * Muestra mensaje de informacion al seleccionar cambiar producto.
+    */
+    public void mostrarDialogoCambiarProducto( String pNombreProducto )
+    {
+        DialogoCambiarProducto dialogo = new DialogoCambiarProducto( this, pNombreProducto );
+        dialogo.setVisible( true );
+    }
+
+    /**
+     * Muestra el total de dinero en caja de la tienda.
+     */
+    public void mostrarDineroEnCaja( )
+    {
+        JOptionPane.showMessageDialog( this, "En caja hay: " + tienda.darDineroEnCaja( ) + " $.", "Dinero en caja", JOptionPane.INFORMATION_MESSAGE );
+    }
+
+    /**
+     * Muestra el promedio de dinero en caja.
+     */
+    public void mostrarPromedioVentas( )
+    {
+        JOptionPane.showMessageDialog( this, "El promedio de ventas es: " + tienda.darPromedioVentas( ), "Promedio ventas", JOptionPane.INFORMATION_MESSAGE );
+    }
+
+
+    public void reqFuncOpcion1( )
+    {
+        String resultado = tienda.metodo1( );
+        actualizar( );
+        JOptionPane.showMessageDialog( this, resultado, "Respuesta 1", JOptionPane.INFORMATION_MESSAGE );
+    }
+
+    /**
+     * Metodo para la extension2
+     */
+    public void reqFuncOpcion2( )
+    {
+        String resultado = tienda.metodo2( );
+        actualizar( );
+        JOptionPane.showMessageDialog( this, resultado, "Respuesta 2", JOptionPane.INFORMATION_MESSAGE );
+    }
+
+    /**
+     * Ejecutar la aplicacion.
+    */
+    public static void main( String[] pArgs )
+    {
+        try
+        {
+            UIManager.setLookAndFeel( UIManager.getCrossPlatformLookAndFeelClassName( ) );
+
+            InterfazTienda interfaz = new InterfazTienda( );
+            interfaz.setVisible( true );
+        }
+        catch( Exception e )
+        {
+            e.printStackTrace( );
+        }
+    }
+
+}
