@@ -1,0 +1,142 @@
+package Tienda_Fus;
+
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
+
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.UIManager;
+
+import Tienda_Fus.Producto.Tipo;
+
+/**
+ * panel principal.
+ */
+@SuppressWarnings("serial")
+public class InterfazTienda extends JFrame
+{
+  
+    /**
+     * Clase principal.
+     */
+    private MetodosTienda MTienda;
+
+     /**
+     * Clase con la imagen del título.
+     */
+    private Imgprincipal panelImagen;
+
+    /**
+     * Opciones de  la aplicacion.
+     */
+    private SeleccionOpciones panelOpciones;
+
+    /**
+     * Información opcion producto1.
+     */
+    private OpcioneslProducto Producto1;
+
+    /**
+     * Información opcion producto2.
+     */
+    private OpcioneslProducto Producto2;
+
+    /**
+     * Información opcion producto3
+     */
+    private OpcioneslProducto Producto3;
+
+    /**
+     * Información opcion producto4
+     */
+    private OpcioneslProducto Producto4;
+
+       /**
+     * Generacion ventana principal de la aplicación.
+     */
+    public InterfazTienda( )
+    {
+        setTitle( "Tienda Fus" );
+        setSize( 800, 770 );
+        setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+
+        MTienda = new MetodosTienda( );
+
+        setLayout( new BorderLayout( ) );
+
+        panelImagen = new Imgprincipal( );
+        add( panelImagen, BorderLayout.NORTH );
+
+        panelOpciones = new SeleccionOpciones( this );
+        add( panelOpciones, BorderLayout.SOUTH );
+
+        JPanel panelCentro = new JPanel( );
+        panelCentro.setLayout( new GridLayout( 2, 2 ) );
+
+        Producto1 = new OpcioneslProducto( this );
+        panelCentro.add(Producto1 );
+        Producto2 = new OpcioneslProducto( this );
+        panelCentro.add(Producto2 );
+        Producto3 = new OpcioneslProducto( this );
+        panelCentro.add(Producto3 );
+        Producto4 = new OpcioneslProducto( this );
+        panelCentro.add(Producto4 );
+
+        add( panelCentro, BorderLayout.CENTER );
+
+        setLocationRelativeTo( null );
+        setResizable( false );
+
+        actualizar( );
+    }
+
+    /**
+     * Actualizar la información de los paneles.
+     */
+    private void actualizar( )
+    {
+        Producto1.actualizarInfo(MTienda.darProducto1( ) );
+        Producto2.actualizarInfo(MTienda.darProducto2( ) );
+        Producto3.actualizarInfo(MTienda.darProducto3( ) );
+        Producto4.actualizarInfo(MTienda.darProducto4( ) );
+    }
+
+     /**
+     * Ventas dependiendo la cantidad ingresada en la interfaz
+     */
+    public void VentasProducto( String pNombreProducto )
+    {
+        String pCant = JOptionPane.showInputDialog( this, "Cantidad de unidades a vender:", "Vender producto", JOptionPane.INFORMATION_MESSAGE );
+        if( pCant != null )
+        {
+            try
+            {
+//                int pCantidadBodega = Integer.parseInt( pCant );
+                int cantidad = Integer.parseInt( pCant );
+                if( cantidad > 0 )
+                {
+                    int venta = MTienda.venderProducto( pNombreProducto, cantidad );
+                    if( venta > 0 )
+                    {
+                        JOptionPane.showMessageDialog( this, "Fueron vendidas " + venta + " unidades.", "Vender producto", JOptionPane.INFORMATION_MESSAGE );
+                        actualizar( );
+                    }
+//                    else if (venta > pCantidadBodega)
+//{JOptionPane.showMessageDialog( this, "El producto no tiene unidades para realizar la venta.", "Vender producto", JOptionPane.ERROR_MESSAGE );}
+                    else
+                    {
+                        JOptionPane.showMessageDialog( this, "El producto no tiene unidades para realizar la venta.", "Vender producto", JOptionPane.ERROR_MESSAGE );
+                    }
+                }
+                else
+                {
+                    JOptionPane.showMessageDialog( this, "La cantidad ingresada debe ser mayor a cero.", "Vender producto", JOptionPane.ERROR_MESSAGE );
+                }
+            }
+            catch( NumberFormatException e )
+            {
+                JOptionPane.showMessageDialog( this, "El valor ingresado debe ser un valor numérico.", "Vender producto", JOptionPane.ERROR_MESSAGE );
+            }
+        }
+    }
