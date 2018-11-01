@@ -1,0 +1,131 @@
+
+package Metodos;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import javax.swing.JOptionPane;
+
+public class MetodoModificar {
+   
+Pool metodospool = new Pool();
+
+public void Modificar(String tipo, String cantidadBodega, String valorunitario, String cantidadvendidas, 
+                      String cantidadminima){
+
+int confirmar = JOptionPane.showConfirmDialog(null, "¿Desea modificar los datos actuales?");
+
+
+if(confirmar == JOptionPane.YES_OPTION){
+
+    Connection conexion = null;
+    
+    try {
+    
+        conexion = metodospool.dataSource.getConnection();
+        
+        String Ssql = "UPDATE contacto SET nombres=?, apellidos=?, email=?, celular=?, direccion=?, ciudad=? "
+                    + "WHERE id_contacto=?";
+        
+        PreparedStatement prest = conexion.prepareStatement(Ssql);
+        
+        prest.setString(1, tipo);
+        prest.setString(2, cantidadBodega);
+        prest.setString(3, valorunitario);
+        prest.setString(4, cantidadvendidas);
+        prest.setString(5, cantidadminima);
+        
+        if(prest.executeUpdate() > 0){
+        
+            JOptionPane.showMessageDialog(null, "Los datos han sido modificados con éxito", "Operación Exitosa", 
+                                          JOptionPane.INFORMATION_MESSAGE);
+            
+        }else{
+        
+            JOptionPane.showMessageDialog(null, "No se ha podido realizar la actualización de los datos\n"
+                                          + "Inténtelo nuevamente.", "Error en la operación", 
+                                          JOptionPane.ERROR_MESSAGE);
+        
+        }
+        
+    } catch (SQLException e) {
+    
+        JOptionPane.showMessageDialog(null, "No se ha podido realizar la actualización de los datos\n"
+                                          + "Inténtelo nuevamente.\n"
+                                          + "Error: "+e, "Error en la operación", 
+                                          JOptionPane.ERROR_MESSAGE);
+    
+    }finally{
+    
+        if(conexion!=null){
+        
+            try {
+                
+                conexion.close();
+            
+            } catch (SQLException e) {
+            
+                JOptionPane.showMessageDialog(null, "Error al intentar cerrar la conexión."
+                                          + "Error: "+e, "Error en la operación", 
+                                          JOptionPane.ERROR_MESSAGE);
+                
+            }
+            
+        }
+           
+    }
+    
+
+}
+
+}
+    
+}
+************************************************************************************************************
+
+Clase Pool
+
+package Metodos;
+
+import javax.sql.DataSource;
+import org.apache.commons.dbcp.BasicDataSource;
+
+public class Pool {
+
+
+    public DataSource dataSource;
+
+    public String db = "Tienda";
+    public String url = "jdbc:mysql://localhost/"+db;
+    public String user = "root";
+    public String pass = "123";
+
+
+
+    public Pool(){
+
+        inicializaDataSource();
+
+    }
+
+
+
+    private void inicializaDataSource(){
+
+
+        BasicDataSource basicDataSource = new BasicDataSource();
+
+        basicDataSource.setDriverClassName("org.gjt.mm.mysql.Driver");
+        basicDataSource.setUsername(user);
+        basicDataSource.setPassword(pass);
+        basicDataSource.setUrl(url);
+        basicDataSource.setMaxActive(50);
+
+
+        dataSource = basicDataSource;
+
+    }
+
+
+}
+	
