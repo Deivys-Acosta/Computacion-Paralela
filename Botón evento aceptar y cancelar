@@ -1,0 +1,59 @@
+package AWT;
+
+import java.awt.Button;
+import java.awt.FlowLayout;
+import java.awt.Frame;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
+public class AceptarYcancelar {
+
+ /**
+  * @param args
+  */
+ public static void main(String[] args) {
+  Frame f=new Frame("Eventos con botones ");
+  f.setSize(200,150);
+  f.setLayout(new FlowLayout());
+  
+  Button b1=new Button("Aceptar");
+  b1.addActionListener(new Manejador());
+  f.add(b1);
+  
+  Button b2=new Button("Cancelar");
+  b2.addActionListener(new Manejador());
+  f.add(b2);
+  f.setVisible(true);
+  f.addWindowListener(new WindowAdapter(){
+   public void windowClosing(WindowEvent e){
+    System.exit(0);
+   }
+  });
+
+ }
+
+
+}
+
+
+------------------------------------
+
+package AWT;
+
+import java.awt.Button;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class Manejador implements ActionListener {
+
+ @Override
+ public void actionPerformed(ActionEvent e) {
+   
+   if(((Button)e.getSource()).getLabel().equals("Aceptar"))
+    System.out.println("HA pulsado Aceptar");
+   else
+    System.out.println("Ha pulsado cancelar");
+   }
+}
