@@ -1,0 +1,43 @@
+package puntoventa;
+import java.sql.*;
+import java.util.Scanner;
+ 
+ 
+ 
+public class PuntoVenta  {
+ 
+public static Connection Conexión;
+ 
+    public static void main(String[] args) {
+ 
+      try{
+          Scanner lector = new Scanner(System.in);
+          String Nombre ="";
+          String Marca = "";
+ 
+ 
+ 
+ 
+ 
+            System.out.println("Captura el nombre de la marca:");
+            Nombre = lector.next();
+            System.out.println("Captura el id de la marca");
+            Marca = lector.next();
+ 
+          Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+          Conexión = DriverManager.getConnection("jdbc:sqlserver://localhost\\SQLExpress:1433;databaseName=PuntoVenta");
+ 
+ 
+          PreparedStatement enrollItmt;
+          enrollItmt = Conexión.prepareStatement("INSERT INTO dbo.Marca(Nombre, Marca) VALUES ("    + Nombre + Marca + ")");
+          enrollItmt.execute();
+ 
+ 
+        }
+        catch(ClassNotFoundException | SQLException ex)
+        {
+ 
+        }
+    }
+ 
+}
